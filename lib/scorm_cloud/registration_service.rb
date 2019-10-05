@@ -45,8 +45,8 @@ module ScormCloud
           regs |= results.registrations
           opts[:more] = results.more
           puts regs.count
-          puts result.more
-          break unless result.more.present?
+          puts results.more
+          break unless results.more.present?
         end
         regs.map { |e| Registration.from_response(e) }
       rescue RusticiSoftwareCloudV2::ApiError=>e
@@ -72,7 +72,7 @@ module ScormCloud
       rescue RusticiSoftwareCloudV2::ApiError=>e
         raise RequestError.new(e, e.message)
       end
-      return {complete:reg_result, success:result.registration_success.downcase, totaltime:result.total_seconds_tracked, score:result.score.try(:scaled) }
+      return {first_access_date:result.first_access_date,last_access_date:result.last_access_date,create_date:result.created_date,completed_date:result.completed_date,complete:reg_result, success:result.registration_success.downcase, totaltime:result.total_seconds_tracked, score:result.score.try(:scaled) }
     end
 
     def launch(reg_id, redirect_url, options = {})
