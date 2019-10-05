@@ -85,6 +85,15 @@ module ScormCloud
     end
 
     def update_dispatches(dispatch_attrs = {})
+      dispatch_id = dispatch_attrs[:dispatchid]
+      dispatch_properties = RusticiSoftwareCloudV2::UpdateDispatchSchema.new(allow_new_registrations: true,
+                                 instanced: false,
+                                 registration_cap: dispatch_attrs[:registrationcap]||0,
+                                 expiration_date: dispatch_attrs[:expirationdate],
+                                 enabled: dispatch_attrs[:enabled]||true)
+      if dispatch_id.present?
+        api_instance.update_dispatch(ENV['RUSTICI_TENANT'], dispatch_id, dispatch_properties)
+      end
       ## warning... needs to be implemented on dispatch model!
       return true
     end
