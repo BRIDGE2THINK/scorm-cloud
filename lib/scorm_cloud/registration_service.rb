@@ -44,8 +44,8 @@ module ScormCloud
           results = api_instance.get_registrations(ENV['RUSTICI_TENANT'],opts)
           regs |= results.registrations
           opts[:more] = results.more
-          puts regs.count
-          puts results.more
+          #puts regs.count
+          #puts results.more
           break unless results.more.present?
         end
         regs.map { |e| Registration.from_response(e) }
