@@ -45,12 +45,13 @@ module ScormCloud
 
     def create_dispatch(course_id, destination_id, dispatch_attrs = {})
       dispatch_id = SecureRandom.uuid
-      dispatch = RusticiSoftwareCloudV2::CreateDispatchSchema.new(destinationId: destination_id,
-        courseId: course_id,
-        allowNewRegistrations: true,
+      dispatch = RusticiSoftwareCloudV2::CreateDispatchSchema.new(
+        destination_id: destination_id,
+        course_id: course_id,
+        allow_new_registrations: true,
         instanced: false,
-        registrationCap: dispatch_attrs[:registrationcap]||0,
-        expirationDate: dispatch_attrs[:expirationdate],
+        registration_cap: dispatch_attrs[:registrationcap]||0,
+        expiration_date: dispatch_attrs[:expirationdate],
         enabled: true
       )
       d_id = RusticiSoftwareCloudV2::CreateDispatchIdSchema.new(id: dispatch_id,
