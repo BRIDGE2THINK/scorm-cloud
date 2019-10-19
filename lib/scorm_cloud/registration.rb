@@ -1,7 +1,7 @@
 module ScormCloud
   class Registration < ScormCloud::BaseObject
     attr_accessor :id, :courseid, :app_id, :registration_id, :course_id,
-      :course_title, :learner_id, :learner_first_name, :learner_last_name,
+      :course_title, :learner_id, :dispatch_id, :learner_first_name, :learner_last_name,
       :email, :create_date, :first_access_date, :last_access_date,
       :completed_date, :instances, :last_course_version_launched
 =begin
@@ -43,18 +43,24 @@ module ScormCloud
     end
     def self.from_response(response)
       r = Registration.new
-
+      generated_learner_id = if response.dispatch_id.present?
+        d = ::Dispatch.find_by_scorm_id(response.dispatch_id)
+        "#{d.learning_system.name}_#{response.learner.id}"
+      else
+        response.learner.id
+      end
       r.set_attributes({
         "id"=>response.id,
         "courseid"=>response.course.id,
         "app_id"=>"",
         "registration_id"=>response.id,
         "course_id"=>response.course.id,
+        "dispatch_id"=>response.dispatch_id,
         "course_title"=>response.course.title,
-        "learner_id"=>response.learner.id,
+        "learner_id"=>generated_learner_id,
         "learner_first_name"=>response.learner.first_name,
         "learner_last_name"=>response.learner.last_name,
-        "email"=>learner_id_to_email(response.learner.id),
+        "email"=>learner_id_to_email(generated_learner_id),
         "create_date"=>response.created_date,
         "first_access_date"=>response.first_access_date,
         "last_access_date"=>response.last_access_date,
